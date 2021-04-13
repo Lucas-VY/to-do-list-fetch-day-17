@@ -1,81 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useRef, useEffect,  } from 'react';
 import './App.css';
 
 function App() {
 
-  let characterRef = useRef(null);
 
-  const [linkUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/lucas-vy");
+  const [linkUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/Lucas-VY")
+  const [assignment, setAssignment] = useState([]);
+
+  let characterRef = useRef(null);
   const [todo, setTodo] = useState([]);
-  const [assignment, setAssignment] = useState([
-    { label: "Make the bed", done: false },
-    { label: "Walk the dog", done: false },
-    { label: "Do the replits", done: false },
-  ]);
 
   useEffect(() => {
-    getassignment(linkUrl)},[linkUrl]);
+    getAssignment(linkUrl)
+  }, [linkUrl]);
 
-  //get
-  const getassignment = linkUrl => {
+  //GET
+  const getAssignment = linkUrl => {
     fetch(linkUrl)
-      .then(Response => Response.json())
+      .then(Resp => Resp.json())
       .then(data => console.log(data))
       .catch(error => console.log(error))
   }
 
-    // POST
-    const getUser = linkUrl => {
-      fetch(linkUrl, {
-        method: 'POST',
-        body: JSON.stringify([]),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(Response => Response.json())
-        .then(data => console.log(data.result))
-        .catch(error => console.log(error));
-      console.warn('New Usuario')
-    };
-
-    //PUT
-    const updateassignment = (linkUrl, assignment) => {
-
-      fetch(linkUrl, {
-        method: 'PUT',
-        body: JSON.stringify(assignment),
-        headers: {
-          'content-type': 'application/json'
-        }
-      })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.log(error))
-    }
-
-     //DELETE
-  const deleteUser = (linkUrl) => {
+  //PUT
+  const updateAssignment = (linkUrl, assignment) => {
     fetch(linkUrl, {
-      method: 'DELETE',
+      method: 'PUT',
+      body: JSON.stringify(assignment),
       headers: {
         'content-type': 'application/json'
       }
     })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error))
+      .then(resp => resp.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error))
   }
 
+  /*                */
 
-/*       */
+  // POST
+  const generateUser = linkUrl => {
+    fetch(linkUrl, {
+      method: 'POST',
+      body: JSON.stringify([assignment]),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(Resp => Resp.json())
+      .then(data => console.log(data.result))
+      .catch(error => console.log(error));
+  };
 
   const addAssignment = (e) => {
-    if (e.key === 100 && characterRef.value !== "") {
+ // 13=enter 
+    if (e.keyCode === 13 && characterRef.value !== "") {
       setTodo(todo.concat(characterRef.value));
-      let newassignments = [...assignment, { label: e.target.value, done: false }]
-      setAssignment(newassignments)
-      updateassignment(linkUrl, newassignments)
+      let newAssignments = [...assignment, { label: characterRef.value, done: false }]
+      setAssignment(newAssignments)
+      updateAssignment(linkUrl, newAssignments)
       characterRef.value = "";
     }
   }
@@ -87,21 +70,35 @@ function App() {
     }
   }
 
+  /*            */
+
+  //DELETE
+  const deleteUser = (linkUrl) => {
+    fetch(linkUrl, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error))
+  }
+
   const deleteAssignment = (index) => {
     todo.splice(index, 1);
     setTodo([...todo]);
     assignment.splice(index, 1)
     setAssignment([...assignment])
 
-    updateassignment(linkUrl, assignment)
+    updateAssignment(linkUrl, assignment)
   }
 
- 
-  const deleteAllassignments = () => {
+  const deleteAllAssignments = () => {
     setTodo([])
-    setAssignment([])
     deleteUser(linkUrl)
-    console.warn('User deleted')
+    setAssignment([])
+    console.warn('All deleted')
   }
 
   return (
@@ -114,7 +111,7 @@ function App() {
               <div className="input-group mb-3 list-group list-group">
                 <input onKeyUp={addAssignment} ref={r => characterRef = r} type="text" id="input" className="list-group-item" placeholder="Add a new your assignment!" />
                 <div className="input-group-append list-group list-group">
-                  <button onClick={() => getUser(linkUrl)} className="btn btn-primary" type="button" id="button">New User</button>
+                  <button onClick={() => generateUser(linkUrl)} className="btn btn-primary" type="button" id="button">New User</button>
                   <button onClick={addAssignmentB} className="btn btn-sm btn-success" type="button" id="button">Add</button>
                 </div>
               </div>
@@ -131,7 +128,7 @@ function App() {
           </div>
           <div className="card-footer">
             <strong> Current Nº of To-Do's: {todo.length}</strong>
-            <button className="btn btn-sm float-right btn-danger" id="deleteAll" onClick={deleteAllassignments}><i className="fas fa-eraser"> Eraise All</i></button>
+            <button className="btn btn-sm float-right btn-danger" id="deleteAll" onClick={deleteAllAssignments}><i className="fas fa-eraser"> Eraise All</i></button>
           </div>
         </div>
       </div>
