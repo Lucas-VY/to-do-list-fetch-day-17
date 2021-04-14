@@ -3,7 +3,6 @@ import './App.css';
 
 function App() {
 
-
   const [linkUrl] = useState("https://assets.breatheco.de/apis/fake/todos/user/Lucas-VY")
   const [assignment, setAssignment] = useState([]);
 
@@ -109,7 +108,7 @@ function App() {
             <h1 className="card-title text-center">To-Do List</h1>
             <ol className="list-group list-group">
               <div className="input-group mb-3 list-group list-group">
-                <input onKeyUp={addAssignment} ref={r => characterRef = r} type="text" id="input" className="list-group-item" placeholder="Add a new your assignment!" />
+                <input onKeyUp={addAssignment} ref={r => characterRef = r} type="text" id="input" className="list-group-item" placeholder="Press Enter to Add a Task or New User name!" />
                 <div className="input-group-append list-group list-group">
                   <button onClick={() => generateUser(linkUrl)} className="btn btn-primary" type="button" id="button">New User</button>
                   <button onClick={addAssignmentB} className="btn btn-sm btn-success" type="button" id="button">Add</button>
